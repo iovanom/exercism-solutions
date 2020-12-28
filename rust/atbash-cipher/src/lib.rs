@@ -10,21 +10,20 @@ fn _translate(c: char) -> char {
 
 /// "Encipher" with the Atbash cipher.
 pub fn encode(plain: &str) -> String {
-    String::from(
-        plain
-            .chars()
-            .filter(|&c| c.is_ascii_alphanumeric())
-            .map(_translate)
-            .enumerate()
-            .fold(String::new(), |mut res, (i, c)| {
-                res.push(c);
-                if (i + 1) % 5 == 0 {
-                    res.push(' ');
-                }
-                res
-            })
-            .trim(),
-    )
+    plain
+        .chars()
+        .filter(|&c| c.is_ascii_alphanumeric())
+        .map(_translate)
+        .enumerate()
+        .fold(String::new(), |mut res, (i, c)| {
+            res.push(c);
+            if (i + 1) % 5 == 0 {
+                res.push(' ');
+            }
+            res
+        })
+        .trim()
+        .to_string()
 }
 
 /// "Decipher" with the Atbash cipher.
