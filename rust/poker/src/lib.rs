@@ -16,7 +16,7 @@ pub fn winning_hands<'a>(hands: &[&'a str]) -> Option<Vec<&'a str>> {
         let poker_hand = PokerHand::new(hand).ok()?;
         result.push(poker_hand);
     }
-    result.sort_by(|a, b| b.hand_value().partial_cmp(&a.hand_value()).unwrap());
+    result.sort_by(|a, b| b.hand_value().cmp(&a.hand_value()));
     for r in result.clone() {
         println!("{:?} - {}", r, r.hand_value());
     }
@@ -71,6 +71,7 @@ impl fmt::Debug for Card {
 struct PokerHand<'a> {
     cards: Vec<Card>,
     hand: &'a str,
+    value: Option<u32>,
 }
 
 impl<'a> PokerHand<'a> {
@@ -110,16 +111,22 @@ impl<'a> PokerHand<'a> {
             };
             cards.push(Card(rank, suit));
         }
-        cards.sort_by(|a, b| {
-            a.0.partial_cmp(&b.0)
-                .unwrap()
-                .then(a.1.partial_cmp(&b.1).unwrap())
-        });
-        Ok(PokerHand { cards, hand })
+        cards.sort_by(|a, b| a.0.cmp(&b.0).then(a.1.partial_cmp(&b.1).unwrap()));
+        let mut hand_obj = PokerHand {
+            cards,
+            hand,
+            value: None,
+        };
+        hand_obj.calc_value();
+        Ok(hand_obj)
     }
 
     fn hand_value(&self) -> u32 {
-        if self.is_straight_flush() {
+        self.value.unwrap()
+    }
+
+    fn calc_value(&mut self) {
+        let value = if self.is_straight_flush() {
             self.value_traight_flush()
         } else if self.is_4s() {
             self.value_four_kind()
@@ -141,7 +148,8 @@ impl<'a> PokerHand<'a> {
             self.value_pair()
         } else {
             self.value_hight_card()
-        }
+        };
+        self.value = Some(value);
     }
 
     fn is_flush(&self) -> bool {

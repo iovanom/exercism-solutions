@@ -6,6 +6,22 @@ pub mod graph {
 
     type Attributes = HashMap<String, String>;
 
+    fn collect_attributes(attrs: &[(&str, &str)]) -> Attributes {
+        attrs
+            .iter()
+            .map(|(k, v)| (k.to_string(), v.to_string()))
+            .collect()
+    }
+
+    macro_rules! impl_with_attrs {
+        () => {
+            pub fn with_attrs(mut self, attrs: &[(&str, &str)]) -> Self {
+                self.attrs = crate::graph::collect_attributes(attrs);
+                self
+            }
+        };
+    }
+
     #[derive(Default)]
     pub struct Graph<'a> {
         pub nodes: Vec<Node<'a>>,
@@ -28,13 +44,7 @@ pub mod graph {
             self
         }
 
-        pub fn with_attrs(mut self, attrs: &[(&str, &str)]) -> Self {
-            self.attrs = attrs
-                .iter()
-                .map(|(k, v)| (k.to_string(), v.to_string()))
-                .collect();
-            self
-        }
+        impl_with_attrs!();
 
         pub fn get_node(&self, node: &str) -> Option<Node<'a>> {
             self.nodes.iter().cloned().find(|n| n.name == node)
@@ -59,13 +69,7 @@ pub mod graph {
                     }
                 }
 
-                pub fn with_attrs(mut self, attrs: &[(&str, &str)]) -> Self {
-                    self.attrs = attrs
-                        .iter()
-                        .map(|(k, v)| (k.to_string(), v.to_string()))
-                        .collect();
-                    self
-                }
+                impl_with_attrs!();
 
                 pub fn get_attr(&mut self, attr: &'a str) -> Option<&str> {
                     Some(self.attrs.entry(attr.to_string()).or_default())
@@ -89,13 +93,7 @@ pub mod graph {
                     }
                 }
 
-                pub fn with_attrs(mut self, attrs: &[(&str, &str)]) -> Self {
-                    self.attrs = attrs
-                        .iter()
-                        .map(|(k, v)| (k.to_string(), v.to_string()))
-                        .collect();
-                    self
-                }
+                impl_with_attrs!();
             }
         }
     }

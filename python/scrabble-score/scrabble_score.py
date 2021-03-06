@@ -1,4 +1,4 @@
-configs = (
+CONFIGS = (
     ('AEIOULNRST', 1),
     ('DG', 2),
     ('BCMP', 3),
@@ -8,7 +8,7 @@ configs = (
     ('QZ', 10),
 )
 
-scores = { c: s for (chars, s) in configs for c in chars } 
+SCORES = {c: s for chars, s in CONFIGS for c in chars} 
 
 def score(word):
-    return sum(map(lambda c: scores[c], word.upper()))
+    return sum(map(lambda c: SCORES[c], word.upper()))

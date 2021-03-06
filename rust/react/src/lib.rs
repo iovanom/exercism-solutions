@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 /// `InputCellID` is a unique identifier for an input cell.
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct InputCellID();
+pub struct InputCellID(u64);
 /// `ComputeCellID` is a unique identifier for a compute cell.
 /// Values of type `InputCellID` and `ComputeCellID` should not be mutually assignable,
 /// demonstrated by the following tests:
@@ -32,21 +34,29 @@ pub enum RemoveCallbackError {
     NonexistentCallback,
 }
 
-pub struct Reactor<T> {
+#[derive(Default)]
+pub struct Reactor<T>
+where
+    T: Default,
+{
     // Just so that the compiler doesn't complain about an unused type parameter.
     // You probably want to delete this field.
-    dummy: ::std::marker::PhantomData<T>,
+    inputs: HashMap<u64, T>,
+    next_id: u64,
 }
 
 // You are guaranteed that Reactor will only be tested against types that are Copy + PartialEq.
-impl<T: Copy + PartialEq> Reactor<T> {
+impl<T: Copy + PartialEq + Default> Reactor<T> {
     pub fn new() -> Self {
-        unimplemented!()
+        Self::default()
     }
 
     // Creates an input cell with the specified initial value, returning its ID.
     pub fn create_input(&mut self, _initial: T) -> InputCellID {
-        unimplemented!()
+        let input_cell_id = InputCellID(self.next_id);
+        self.inputs.insert(self.next_id, _initial);
+        self.next_id += 1;
+        input_cell_id
     }
 
     // Creates a compute cell with the specified dependencies and compute function.
@@ -78,7 +88,10 @@ impl<T: Copy + PartialEq> Reactor<T> {
     // It turns out this introduces a significant amount of extra complexity to this exercise.
     // We chose not to cover this here, since this exercise is probably enough work as-is.
     pub fn value(&self, id: CellID) -> Option<T> {
-        unimplemented!("Get the value of the cell whose id is {:?}", id)
+        match id {
+            CellID::Input(InputCellID(_id)) => self.inputs.get(&_id).map(|&v| v),
+            _ => None,
+        }
     }
 
     // Sets the value of the specified input cell.
@@ -90,7 +103,13 @@ impl<T: Copy + PartialEq> Reactor<T> {
     //
     // As before, that turned out to add too much extra complexity.
     pub fn set_value(&mut self, _id: InputCellID, _new_value: T) -> bool {
-        unimplemented!()
+        let InputCellID(_id) = _id;
+        if self.inputs.contains_key(&_id) {
+            self.inputs.insert(_id, _new_value);
+            true
+        } else {
+            false
+        }
     }
 
     // Adds a callback to the specified compute cell.
