@@ -10,11 +10,10 @@ FLOWERS_MAP = { flower[0].upper():flower for flower in FLOWERS }
 
 class Garden:
     def __init__(self, diagram, students=None):
-        self.students = DEFAULT_STUDENTS
-        if students:
-            self.students = sorted(students)
-        self.rows = diagram.split('\n')
+        students = DEFAULT_STUDENTS if not students else sorted(students)
+        self.flowers = { student: [ FLOWERS_MAP[f] for r in diagram.split('\n')
+                                   for f in r[i*2:i*2+2] ]
+                        for i, student in enumerate(students) }
 
     def plants(self, student):
-        i = self.students.index(student) * 2
-        return [ FLOWERS_MAP[f] for r in self.rows for f in r[i:i+2] ]
+        return self.flowers[student]
