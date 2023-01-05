@@ -10,12 +10,15 @@ var exists interface{}
 
 var robots = make(map[string]interface{})
 
+// MaxRobots show the maximum value of robots
 const MaxRobots = 26 * 26 * 1000
 
+// Robot representation
 type Robot struct {
 	name string
 }
 
+// Name return the name of the robot
 func (r *Robot) Name() (string, error) {
 	var err error
 	if r.name == "" {
@@ -24,6 +27,7 @@ func (r *Robot) Name() (string, error) {
 	return r.name, err
 }
 
+// Reset the name to default value
 func (r *Robot) Reset() {
 	r.name = ""
 }
@@ -48,6 +52,6 @@ func (r *Robot) generateName() (string, error) {
 			}
 		}
 	} else {
-		return "", fmt.Errorf("Error to generate new name. All names possible are taken.")
+		return "", fmt.Errorf("error to generate new name. All names possible are taken")
 	}
 }

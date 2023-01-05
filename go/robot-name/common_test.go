@@ -1,3 +1,4 @@
+// This is the test package for robotname
 package robotname
 
 import (

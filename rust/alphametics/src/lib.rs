@@ -5,9 +5,9 @@ use std::collections::HashMap;
 
 pub fn solve(input: &str) -> Option<HashMap<char, u8>> {
     let first_letters: Vec<char> = input
-        .split(" ")
+        .split(' ')
         .into_iter()
-        .filter_map(|word| word.chars().nth(0))
+        .filter_map(|word| word.chars().next())
         .filter(|c| c.is_alphabetic())
         .map(|c| c.to_ascii_uppercase())
         .collect();
@@ -33,7 +33,7 @@ pub fn solve(input: &str) -> Option<HashMap<char, u8>> {
         if first_letters
             .clone()
             .into_iter()
-            .any(|c| solution.get(&c).unwrap().to_owned() == 0)
+            .any(|c| *solution.get(&c).unwrap() == 0)
         {
             continue;
         }
