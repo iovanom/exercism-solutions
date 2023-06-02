@@ -2,12 +2,13 @@ package pythagorean
 
 type Triplet [3]int
 
-// Range is the function that return and slice of Triplet in privided range
+// Range generates list of all Pythagorean triplets with side lengths
+// in the provided range.
 func Range(min, max int) []Triplet {
-	return make([]Triplet, 0)
+	panic("Please implement the Range function")
 }
 
-// Sum calculate the triplet from provided sum
-func Sum(sum int) Triplet {
-	return Triplet{}
+// Sum returns a list of all Pythagorean triplets with a certain perimeter.
+func Sum(p int) []Triplet {
+	panic("Please implement the Sum function")
 }

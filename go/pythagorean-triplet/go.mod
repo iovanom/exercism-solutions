@@ -1,3 +1,3 @@
-module exercism.com/go/pythagorean-triplet
+module pythagorean
 
-go 1.14
+go 1.18
